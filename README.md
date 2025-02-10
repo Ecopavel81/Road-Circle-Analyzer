@@ -23,7 +23,7 @@ GF_SECURITY_ADMIN_PASSWORD=admin
 
 ![grafana](https://github.com/user-attachments/assets/c0c6d602-2026-460f-9c48-64180e87ca8e)
 
-## Как запустить локально без дополнительных микросервисов:
+## Как запустить локально в Python без дополнительных микросервисов:
 ```
 # ставим библиотеки:
 python -m pip install --upgrade pip
@@ -36,7 +36,7 @@ pip install -r requirements.txt
 python main_optimized.py pipeline.send_info_kafka=False
 ```
 
-## Рассмотрим, как реализован код:
+## Рассмотрим, как реализован код главного сервиса по обработке видеопотока:
 
 Каждый кадр последовательно проходит через ноды, и в атрибуты этого объекта постепенно добавляется все больше и больше информации.
 

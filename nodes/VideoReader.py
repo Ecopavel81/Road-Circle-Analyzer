@@ -69,13 +69,6 @@ class VideoReader:
                 # с видео:
                 timestamp = self.stream.get(cv2.CAP_PROP_POS_MSEC) / 1000
 
-                # делаем костыль, чтобы не было 0-вых тайстампов под конец стрима, баг cv2
-                timestamp = (
-                    timestamp
-                    if timestamp > self.last_frame_timestamp
-                    else self.last_frame_timestamp + 0.1
-                )
-
             # Пропустим некоторые кадры если требуется согласно конфигу
             if abs(self.last_frame_timestamp - timestamp) < self.skip_secs:
                 continue
