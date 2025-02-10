@@ -8,7 +8,13 @@ from nodes.CalcStatisticsNode import CalcStatisticsNode
 from nodes.FlaskServerVideoNode import VideoServer
 from elements.VideoEndBreakElement import VideoEndBreakElement
 from nodes.KafkaProducerNode import KafkaProducerNode
+from utils_local.utils import check_and_set_env_var
 
+# Проверяем и устанавливаем переменные окружения если их нет
+check_and_set_env_var("VIDEO_SRC", "test_videos/test_video.mp4")
+check_and_set_env_var("ROADS_JSON", "configs/entry_exit_lanes.json")
+check_and_set_env_var("TOPIC_NAME", "statistic_1")
+check_and_set_env_var("CAMERA_ID", 1)
 
 @hydra.main(version_base=None, config_path="configs", config_name="app_config")
 def main(config) -> None:

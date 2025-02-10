@@ -74,7 +74,7 @@ kafka_producer_node: #// камера id
   bootstrap_servers: kafka:29092 #127.0.0.1:9092 #kafka:29092
   topic_name: ${oc.env:TOPIC_NAME}
   how_often_sec: 1 # раз в сколько секунд отправлять результат
-  camera_id: ${oc.env:CAMERA_ID}
+  camera_id: ${oc.decode:${oc.env:CAMERA_ID}} 
 
 
 video_server_node: 

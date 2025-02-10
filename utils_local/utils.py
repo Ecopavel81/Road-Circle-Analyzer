@@ -1,9 +1,23 @@
 import logging
+import os
 import time
 import numpy as np
 from shapely.geometry import Point, Polygon
 
 logger_profile = logging.getLogger("profile")
+
+
+def check_and_set_env_var(var_name, value_new):
+    """
+    Проверяет, установлена ли переменная окружения `var_name`. Если не установлена, 
+    присваивает ей значение `value_new`
+    """
+    value = os.getenv(var_name)
+    if value is None:
+        os.environ[var_name] = str(value_new)
+        print(f"Значение {value_new} сохранено в переменную окружения {var_name}.")
+    else:
+        print(f"Переменная {var_name} уже установлена: {value}")
 
 
 def profile_time(func):
