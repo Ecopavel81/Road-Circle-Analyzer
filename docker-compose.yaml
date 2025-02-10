@@ -58,7 +58,7 @@ services:
       - prod_network
       
   grafana:
-    container_name: grafana_traffic
+    container_name: traffic_grafana
     image: grafana/grafana:latest
     environment:
       TZ: "Europe/Moscow"
@@ -75,7 +75,7 @@ services:
       - prod_network
 
   influxdb:
-    container_name: influxdb
+    container_name: traffic_influxdb
     restart: always
     image: influxdb:1.8
     ports:
@@ -92,7 +92,7 @@ services:
       - prod_network
 
   telegraf:
-    container_name: telegraf
+    container_name: traffic_telegraf
     restart: always
     image: telegraf
     depends_on:
@@ -108,7 +108,7 @@ services:
 
   nginx:
     image: nginx:latest
-    container_name: nginx
+    container_name: traffic_nginx
     restart: always
     volumes:
       - ./services/nginx/nginx.conf:/etc/nginx/nginx.conf 
@@ -119,14 +119,14 @@ services:
 
   traffic_analyzer_camera_1:
     build: .
-    image: traffic_analyzer/traffic_analyzer:latest 
+    image: traffic_analyzer:latest 
     restart: always
     container_name: traffic_analyzer_camera_1
     command: python main_optimized.py
     environment:
       - VIDEO_SRC=test_videos/test_video.mp4
       - ROADS_JSON=configs/entry_exit_lanes.json
-      - TOPIC_NAME=statistic_1
+      - TOPIC_NAME=statistics_1
       - CAMERA_ID=1
     volumes:
       - ./configs:/app/configs
@@ -146,14 +146,14 @@ services:
       - prod_network
 
   traffic_analyzer_camera_2:
-    image: traffic_analyzer/traffic_analyzer:latest 
+    image: traffic_analyzer:latest 
     restart: always
     container_name: traffic_analyzer_camera_2
     command: python main_optimized.py
     environment:
       - VIDEO_SRC=test_videos/longer_example.mp4
       - ROADS_JSON=configs/entry_exit_lanes.json
-      - TOPIC_NAME=statistic_1
+      - TOPIC_NAME=statistics_2
       - CAMERA_ID=2
     depends_on:
       kafka:

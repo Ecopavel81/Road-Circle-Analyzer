@@ -39,28 +39,29 @@ class KafkaProducerNode:
 
         if current_time - self.last_send_time > self.how_often_sec or frame_element.frame_num == 1:
             data = {
-                f"cars_{self.camera_id}": frame_element.info["cars_amount"],
-                f"road_1_{self.camera_id}": (
+                f"camera_id": f"id_{self.camera_id}",
+                f"cars": frame_element.info["cars_amount"],
+                f"road_1": (
                     frame_element.info["roads_activity"][1]
                     if timestamp >= self.buffer_analytics_sec
                     else None
                 ),
-                f"road_2_{self.camera_id}": (
+                f"road_2": (
                     frame_element.info["roads_activity"][2]
                     if timestamp >= self.buffer_analytics_sec
                     else None
                 ),
-                f"road_3_{self.camera_id}": (
+                f"road_3": (
                     frame_element.info["roads_activity"][3]
                     if timestamp >= self.buffer_analytics_sec
                     else None
                 ),
-                f"road_4_{self.camera_id}": (
+                f"road_4": (
                     frame_element.info["roads_activity"][4]
                     if timestamp >= self.buffer_analytics_sec
                     else None
                 ),
-                f"road_5_{self.camera_id}": (
+                f"road_5": (
                     frame_element.info["roads_activity"][5]
                     if timestamp >= self.buffer_analytics_sec
                     else None
