@@ -6,12 +6,17 @@
 Подробный туториал по проекту - [__ссылка на видео__](https://youtu.be/u9EtqHz4Vqc)
 
 ## Установка и запуск:
-Необходимо в главной директории создать файл с переменными окружения, которые будут прокинуты в контейнеры Grafana и Influx. Для этого создайте файл `.env` и укажите подобный текст с паролями и логинами к сервисам:
+
+Склонируйте репозиторий:
+```
+git clone https://github.com/Koldim2001/TrafficAnalyzer.git
+```
+После этого необходимо в главной директории  проекта создать файл с переменными окружения, которые будут прокинуты в контейнеры Grafana и Influx. Для этого создайте файл `.env` и укажите подобный текст с паролями и логинами к сервисам:
 ```
 INFLUXDB_ADMIN_USER=admin
 INFLUXDB_ADMIN_PASSWORD=admin
-GF_SECURITY_ADMIN_USER=admin
-GF_SECURITY_ADMIN_PASSWORD=admin
+GRAFANA_ADMIN_USER=admin
+GRAFANA_ADMIN_PASSWORD=admin
 ```
 Далее запустите проект с помощью этой команды:
 ```
