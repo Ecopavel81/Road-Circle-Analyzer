@@ -4,6 +4,7 @@ drafts
 logs
 test_videos/videos_extra
 **.engine
+**.mp4
 videos_out
 test.ipynb
 myenv
