@@ -111,7 +111,7 @@ if __name__ == "__main__":
     # Проверяем и устанавливаем переменные окружения если их нет
     check_and_set_env_var("VIDEO_SRC", "test_videos/test_video.mp4")
     check_and_set_env_var("ROADS_JSON", "configs/entry_exit_lanes.json")
-    check_and_set_env_var("TOPIC_NAME", "statistic_1")
+    check_and_set_env_var("TOPIC_NAME", "statistics_1")
     check_and_set_env_var("CAMERA_ID", 1)
     ts = time()
     main()
