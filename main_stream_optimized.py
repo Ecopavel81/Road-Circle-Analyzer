@@ -14,6 +14,7 @@ from nodes.CalcStatisticsNode import CalcStatisticsNode
 from nodes.FlaskServerVideoNode import VideoServer
 from nodes.KafkaProducerNode import KafkaProducerNode
 from elements.VideoEndBreakElement import VideoEndBreakElement
+from utils_local.utils import check_and_set_env_var
 
 PRINT_PROFILE_INFO = False
 
@@ -27,6 +28,7 @@ def proc_frame_reader(queue_out: Queue, config: dict, time_sleep_start: int):
         ts0 = time()
         try:
             queue_out.put_nowait(frame_element)
+            #sleep(0.25)
             
             if PRINT_PROFILE_INFO:
                 print(f"PROC_FRAME_READER: {(time()-ts0) * 1000:.0f} ms: ")
@@ -65,9 +67,7 @@ def proc_proceessor(queue_in: Queue, config: dict):
         if save_video:
             video_saver_node.process(frame_element)
         if show_in_web:
-            if isinstance(frame_element, VideoEndBreakElement):
-                break
-            video_server_node.update_image(frame_element.frame_result)
+            video_server_node.process(frame_element)
         if PRINT_PROFILE_INFO:
             print(
                 f"PROC_PROCESSOR: {(time()-ts0) * 1000:.0f} ms: "
@@ -108,6 +108,11 @@ def main(config) -> None:
 
 
 if __name__ == "__main__":
+    # Проверяем и устанавливаем переменные окружения если их нет
+    check_and_set_env_var("VIDEO_SRC", "test_videos/test_video.mp4")
+    check_and_set_env_var("ROADS_JSON", "configs/entry_exit_lanes.json")
+    check_and_set_env_var("TOPIC_NAME", "statistic_1")
+    check_and_set_env_var("CAMERA_ID", 1)
     ts = time()
     main()
     print(f"\n total time: {(time()-ts) / 60:.2} minute")

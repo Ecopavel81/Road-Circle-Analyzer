@@ -17,12 +17,6 @@ from utils_local.utils import check_and_set_env_var
 
 PRINT_PROFILE_INFO = False
 
-# Проверяем и устанавливаем переменные окружения если их нет
-check_and_set_env_var("VIDEO_SRC", "test_videos/test_video.mp4")
-check_and_set_env_var("ROADS_JSON", "configs/entry_exit_lanes.json")
-check_and_set_env_var("TOPIC_NAME", "statistic_1")
-check_and_set_env_var("CAMERA_ID", 1)
-
 
 def proc_frame_reader_and_detection(queue_out: Queue, config: dict, time_sleep_start: int):
     sleep_message = f"Система разогревается.. sleep({time_sleep_start})"
@@ -88,9 +82,7 @@ def proc_show_node(queue_in: Queue, config: dict):
         if save_video:
             video_saver_node.process(frame_element)
         if show_in_web:
-            if isinstance(frame_element, VideoEndBreakElement):
-                break
-            video_server_node.update_image(frame_element.frame_result)
+            video_server_node.process(frame_element)
         ts2 = time()
         if PRINT_PROFILE_INFO:
             print(
@@ -138,5 +130,12 @@ def main(config) -> None:
 
 if __name__ == "__main__":
     ts = time()
+
+    # Проверяем и устанавливаем переменные окружения если их нет
+    check_and_set_env_var("VIDEO_SRC", "test_videos/test_video.mp4")
+    check_and_set_env_var("ROADS_JSON", "configs/entry_exit_lanes.json")
+    check_and_set_env_var("TOPIC_NAME", "statistic_1")
+    check_and_set_env_var("CAMERA_ID", 1)
+
     main()
     print(f"\n total time: {(time()-ts) / 60:.2} minute")

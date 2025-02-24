@@ -14,6 +14,7 @@ from nodes.CalcStatisticsNode import CalcStatisticsNode
 from nodes.FlaskServerVideoNode import VideoServer
 from nodes.KafkaProducerNode import KafkaProducerNode
 from elements.VideoEndBreakElement import VideoEndBreakElement
+from utils_local.utils import check_and_set_env_var
 
 PRINT_PROFILE_INFO = False
 
@@ -27,6 +28,7 @@ def proc_frame_reader(queue_out: Queue, config: dict, time_sleep_start: int):
         ts0 = time()
         try:
             queue_out.put_nowait(frame_element)
+            #sleep(0.25)
             
             if PRINT_PROFILE_INFO:
                 print(f"PROC_FRAME_READER: {(time()-ts0) * 1000:.0f} ms: ")
@@ -38,7 +40,7 @@ def proc_frame_reader(queue_out: Queue, config: dict, time_sleep_start: int):
         if isinstance(frame_element, VideoEndBreakElement):
             break
 
-def proc_proceessor(queue_in: Queue, config: dict, frame_process: Process):
+def proc_proceessor(frame_queue_in: Queue, config: dict, frame_process: Process):
     detection_node = DetectionTrackingNodes(config)
     tracker_info_update_node = TrackerInfoUpdateNode(config)
     calc_statistics_node = CalcStatisticsNode(config)
@@ -76,11 +78,8 @@ def proc_proceessor(queue_in: Queue, config: dict, frame_process: Process):
         if save_video:
             video_saver_node.process(frame_element)
 
-        if isinstance(frame_element, VideoEndBreakElement):
-            break
-
         if show_in_web:
-            video_server_node.update_image(frame_element.frame_result)
+            video_server_node.process(frame_element)
 
         if PRINT_PROFILE_INFO:
             print(
@@ -88,6 +87,9 @@ def proc_proceessor(queue_in: Queue, config: dict, frame_process: Process):
                 + f"get {(ts1-ts0) * 1000:.0f} | "
                 + f"nodes_inference {(time()-ts1) * 1000:.0f} | "
             )
+        
+        if isinstance(frame_element, VideoEndBreakElement):
+            break
 
 
 @hydra.main(version_base=None, config_path="configs", config_name="app_config")
@@ -105,6 +107,11 @@ def main(config) -> None:
 
 
 if __name__ == "__main__":
+    # Проверяем и устанавливаем переменные окружения если их нет
+    check_and_set_env_var("VIDEO_SRC", "test_videos/test_video.mp4")
+    check_and_set_env_var("ROADS_JSON", "configs/entry_exit_lanes.json")
+    check_and_set_env_var("TOPIC_NAME", "statistic_1")
+    check_and_set_env_var("CAMERA_ID", 1)
     ts = time()
     main()
     print(f"\n total time: {(time()-ts) / 60:.2} minute")

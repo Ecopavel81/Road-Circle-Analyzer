@@ -5,6 +5,9 @@ import cv2
 import signal
 import os
 
+from elements.FrameElement import FrameElement
+from elements.VideoEndBreakElement import VideoEndBreakElement
+
 
 class EndpointAction(object):
 
@@ -49,6 +52,12 @@ class VideoServer(object):
     def update_image(self, image: np.array):
         self._frame = cv2.resize(image, self.output_size)
 
+    def process(self, frame_element: FrameElement):
+        # Выйти из обработки если это пришел VideoEndBreakElement а не FrameElement
+        if isinstance(frame_element, VideoEndBreakElement):
+            return
+        self.update_image(frame_element.frame_result)
+        
     def run(self):
         self.app_thread = Thread(target=self.app.run, daemon=True, args=(self.host_ip, self.port))
         self.app_thread.start()
