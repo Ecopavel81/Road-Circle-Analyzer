@@ -12,6 +12,9 @@ services:
       interval: 5s
       timeout: 5s
       retries: 10
+    environment:
+      ALLOW_ANONYMOUS_LOGIN: 'yes'
+      ZOOKEEPER_SASL_ENABLED: 'false'
     networks:
       - prod_network
 
@@ -20,23 +23,30 @@ services:
     container_name: traffic_kafka
     restart: always
     ports:
-      - "9094:9092"
-      - "9095:9093"
+      - "9092:9092"
+    volumes:
+      - ./services/kafka/kafka_server_jaas.conf:/kafka_server_jaas.conf:ro
+      - ./services/kafka/init-kafka-broker.sh:/etc/init-kafka-broker.sh:ro
+    entrypoint: /etc/init-kafka-broker.sh
     environment:
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
-      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:29092,OUTSIDE://127.0.0.1:9092
-      KAFKA_LISTENERS: INSIDE://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
+      ALLOW_PLAINTEXT_LISTENER: 'yes'
+      KAFKA_LISTENERS: INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:SASL_PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_SASL_ENABLED_MECHANISMS: PLAIN
+      KAFKA_SASL_MECHANISM_INTER_BROKER_PROTOCOL: PLAIN
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
-      KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
-      KAFKA_LOG_RETENTION_HOURS: 72 # удаление сообщений через 72 часа
-      KAFKA_LOG_RETENTION_CHECK_INTERVAL_MS: 300000
-      KAFKA_LOG_CLEANUP_POLICY: delete
+      KAFKA_OPTS: "-Djava.security.auth.login.config=/etc/kafka/kafka_server_jaas.conf"
+      ZOOKEEPER_SASL_ENABLED: 'false'
+      KAFKA_LOG_RETENTION_HOURS: 24 # удаление сообщений через 24 часа
+      KAFKA_USERNAME: ${KAFKA_USERNAME}
+      KAFKA_PASSWORD: ${KAFKA_PASSWORD}
     depends_on:
       zookeeper:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD", "nc", "-vz", "localhost", "9092" ]
+      test: [ "CMD", "nc", "-vz", "localhost", "9092" ] 
       interval: 10s
       timeout: 5s
       retries: 10

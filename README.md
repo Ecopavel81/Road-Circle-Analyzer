@@ -17,6 +17,8 @@ INFLUXDB_ADMIN_USER=admin
 INFLUXDB_ADMIN_PASSWORD=admin
 GRAFANA_ADMIN_USER=admin
 GRAFANA_ADMIN_PASSWORD=admin
+KAFKA_USERNAME=traffic
+KAFKA_PASSWORD=traffic-secret
 ```
 Далее запустите проект с помощью этой команды:
 ```
