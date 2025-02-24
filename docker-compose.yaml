@@ -25,9 +25,9 @@ services:
     ports:
       - "9092:9092"
     volumes:
-      - ./services/kafka/kafka_server_jaas.conf:/kafka_server_jaas.conf:ro
-      - ./services/kafka/init-kafka-broker.sh:/etc/init-kafka-broker.sh:ro
-    entrypoint: /etc/init-kafka-broker.sh
+      - ./services/kafka/kafka_server_jaas.conf:/kafka_server_jaas.conf
+      - ./services/kafka/init-kafka-broker.sh:/etc/init-kafka-broker.sh
+    command: /bin/bash /etc/init-kafka-broker.sh
     environment:
       ALLOW_PLAINTEXT_LISTENER: 'yes'
       KAFKA_LISTENERS: INTERNAL://0.0.0.0:29092,EXTERNAL://0.0.0.0:9092
